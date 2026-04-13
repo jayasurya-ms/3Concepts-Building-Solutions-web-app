@@ -72,7 +72,7 @@ const AddTripModal = ({ isOpen, onClose }) => {
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed bottom-0 left-0 md:left-[25%] right-0 bg-white w-full md:w-[50%] h-[70vh] rounded-t-4xl shadow-[0_-8px_30px_rgb(0,0,0,0.1)] p-6 flex flex-col border-t border-gray-100 z-[60]"
+            className="fixed bottom-0 left-0 md:left-[25%] right-0 bg-white w-full md:w-[50%] h-[70vh] rounded-t-4xl shadow-[0_-8px_30px_rgb(0,0,0,0.1)] p-6 flex flex-col border-t border-gray-100 z-60"
           >
             <div className="flex items-center justify-between mb-4">
               <div className="space-y-1">
