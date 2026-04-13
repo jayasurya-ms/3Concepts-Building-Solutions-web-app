@@ -2,7 +2,7 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Bell, Clock, ChevronRight, Circle } from "lucide-react";
 import apiService from "../../api/apiService";
-import moment from "moment";
+import dayjs from "dayjs";
 
 const Notifications = () => {
   const { data: notifications, isLoading } = useQuery({
@@ -40,7 +40,7 @@ const Notifications = () => {
                   <div className="flex items-center space-x-1 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
                     <Clock size={12} />
                     <span>
-                      {moment(notif.notification_date).format("DD-MM-YYYY")}
+                      {dayjs(notif.notification_date).format("DD-MM-YYYY")}
                     </span>
                   </div>
                 </div>

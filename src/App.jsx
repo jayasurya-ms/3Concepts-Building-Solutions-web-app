@@ -1,4 +1,4 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 // Layout & Routes
@@ -6,21 +6,26 @@ import MainLayout from "./components/layout/MainLayout";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AuthRoute from "./routes/AuthRoute";
 
-// Auth
-import Login from "./pages/auth/Login";
+// Auth (Lazy Loaded)
+const Login = lazy(() => import("./pages/auth/Login"));
 
-// Feature Pages
-import Home from "./pages/dashboard/Home";
-import TripHistory from "./pages/trips/TripHistory";
-import Profile from "./pages/profile/Profile";
-import Notifications from "./pages/misc/Notifications";
+// Feature Pages (Lazy Loaded)
+const Home = lazy(() => import("./pages/dashboard/Home"));
+const TripHistory = lazy(() => import("./pages/trips/TripHistory"));
+const Profile = lazy(() => import("./pages/profile/Profile"));
+const Notifications = lazy(() => import("./pages/misc/Notifications"));
+
 import { Toaster } from "react-hot-toast";
+
+// Minimal Loading Fallback
+const PageLoader = () => <div className="h-1 bg-red-900/50 w-full fixed top-0 left-0 animate-pulse"></div>;
 
 function App() {
   return (
     <>
       <Toaster position="top-center" reverseOrder={false} />
-      <Routes>
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
       {/* Auth Routes (Public but restricted for logged-in users) */}
       <Route element={<AuthRoute />}>
         <Route path="/login" element={<Login />} />
@@ -39,6 +44,7 @@ function App() {
       {/* Fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+    </Suspense>
     </>
   );
 }

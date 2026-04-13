@@ -1,6 +1,6 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import moment from "moment";
+import dayjs from "dayjs";
 import {
   PlusCircle,
   History,
@@ -95,7 +95,7 @@ const Home = () => {
                   <span>{recentTrip.trips_time}</span>
                 </div>
                 <p className="text-xs text-gray-600 font-bold mt-2 pr-2">
-                  {moment(recentTrip.trips_date).format("DD-MM-YYYY")}
+                  {dayjs(recentTrip.trips_date).format("DD-MM-YYYY")}
                 </p>
               </div>
             </div>
@@ -133,7 +133,7 @@ const Home = () => {
                     {trip.fromsite?.site_name} → {trip.tosite?.site_name}
                   </p>
                   <p className="text-xs text-gray-400 font-medium">
-                    {moment(trip.trips_date).format("DD-MM-YYYY")} •{" "}
+                    {dayjs(trip.trips_date).format("DD-MM-YYYY")} •{" "}
                     {trip.trips_time}
                   </p>
                 </div>
