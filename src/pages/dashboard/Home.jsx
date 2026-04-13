@@ -122,7 +122,7 @@ const Home = () => {
           {tripHistory.data.map((trip, index) => (
             <div
               key={trip.id || index}
-              className="bg-white p-2 rounded-2xl border border-gray-100 flex items-center justify-between group hover:bg-gray-50 transition-all cursor-pointer"
+              className="p-2 rounded-2xl border border-gray-100 bg-[#FFF7F7] flex items-center justify-between group hover:bg-gray-50 transition-all cursor-pointer"
             >
               <div className="flex items-center space-x-4">
                 <div className="p-2 bg-blue-50 text-red-900 rounded-md group-hover:bg-red-900 group-hover:text-white transition-colors text-xs font-black">

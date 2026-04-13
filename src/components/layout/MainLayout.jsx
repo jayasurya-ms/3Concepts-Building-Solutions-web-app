@@ -130,7 +130,10 @@ const MainLayout = ({ children }) => {
         </header>
 
         {/* Scrollable Content */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8 bg-white">
+        <main
+          id="main-scroll"
+          className="flex-1 overflow-y-auto p-4 md:p-8 pb-24 md:pb-8 bg-white"
+        >
           <div className="max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
             <Outlet />
           </div>
