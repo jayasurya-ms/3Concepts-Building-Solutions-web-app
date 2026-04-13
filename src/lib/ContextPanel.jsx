@@ -9,24 +9,29 @@ const AppProvider = ({ children }) => {
   const [statusCheck, setStatusCheck] = useState("ok");
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
+  const [userUrls, setUserUrls] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isAddTripOpen, setIsAddTripOpen] = useState(false);
   const navigate = useNavigate();
 
-  // Initialize auth from cookies
+  // Initialize auth from cookies and localStorage
   const initializeAuth = useCallback(() => {
     const storedToken = Cookies.get("token");
-    const storedId = Cookies.get("id");
-    const storedName = Cookies.get("name");
-    const storedEmail = Cookies.get("email");
+    const storedUser = Cookies.get("user_data");
+    const storedUrls = localStorage.getItem("user_urls");
 
-    if (storedToken) {
-      setToken(storedToken);
-      setUser({
-        id: storedId,
-        name: storedName,
-        email: storedEmail,
-      });
+    if (storedToken && storedUser) {
+      try {
+        setToken(storedToken);
+        setUser(JSON.parse(storedUser));
+        if (storedUrls) {
+          setUserUrls(JSON.parse(storedUrls));
+        }
+      } catch (error) {
+        console.error("Error parsing stored user data:", error);
+        setToken(null);
+        setUser(null);
+      }
     } else {
       setToken(null);
       setUser(null);
@@ -36,6 +41,25 @@ const AppProvider = ({ children }) => {
 
   useEffect(() => {
     initializeAuth();
+
+    const fetchFullProfile = async () => {
+      const storedToken = Cookies.get("token");
+      if (storedToken) {
+        try {
+          const resp = await apiService.fetchProfile();
+          if (resp && resp.data) {
+            setUser(resp.data);
+            setUserUrls(resp.image_url || []);
+            Cookies.set("user_data", JSON.stringify(resp.data), { expires: 7 });
+            localStorage.setItem("user_urls", JSON.stringify(resp.image_url || []));
+          }
+        } catch (error) {
+          console.error("Error fetching full profile on init:", error);
+        }
+      }
+    };
+
+    fetchFullProfile();
 
     const checkPanelStatus = async () => {
       try {
@@ -53,29 +77,47 @@ const AppProvider = ({ children }) => {
     return () => clearInterval(interval);
   }, [initializeAuth]);
 
-  const login = (userData, userToken) => {
+  const login = async (userData, userToken, image_url = []) => {
     const expires = 7;
     Cookies.set("token", userToken, { expires });
-    Cookies.set("id", userData.id, { expires });
-    Cookies.set("name", userData.name, { expires });
-    Cookies.set("email", userData.email, { expires });
+    Cookies.set("user_data", JSON.stringify(userData), { expires });
+    
+    if (image_url && image_url.length > 0) {
+      localStorage.setItem("user_urls", JSON.stringify(image_url));
+      setUserUrls(image_url);
+    }
     
     setToken(userToken);
     setUser(userData);
+
+    // Fetch full profile to get complete image URLs and other details
+    try {
+      const resp = await apiService.fetchProfile();
+      if (resp && resp.data) {
+        const fullUser = resp.data;
+        const fullUrls = resp.image_url || [];
+        Cookies.set("user_data", JSON.stringify(fullUser), { expires });
+        localStorage.setItem("user_urls", JSON.stringify(fullUrls));
+        setUser(fullUser);
+        setUserUrls(fullUrls);
+      }
+    } catch (error) {
+      console.error("Error fetching full profile during login:", error);
+    }
   };
 
   const logout = () => {
     Cookies.remove("token");
-    Cookies.remove("id");
-    Cookies.remove("name");
-    Cookies.remove("email");
+    Cookies.remove("user_data");
+    localStorage.removeItem("user_urls");
     setToken(null);
     setUser(null);
+    setUserUrls([]);
     navigate("/login");
   };
 
   return (
-    <ContextPanel.Provider value={{ statusCheck, user, token, loading, login, logout, isAddTripOpen, setIsAddTripOpen }}>
+    <ContextPanel.Provider value={{ statusCheck, user, token, userUrls, loading, login, logout, isAddTripOpen, setIsAddTripOpen }}>
       {statusCheck === "ok" ? children : (
         <div className="flex items-center justify-center h-screen bg-white">
           <div className="text-center space-y-4">

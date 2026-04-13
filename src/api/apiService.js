@@ -56,7 +56,10 @@ const apiService = {
   // 8. PUT update-profile
   updateProfile: async (profileData) => {
     // profileData: { name, mobile, email, user_image }
-    const response = await axiosInstance.put(ENDPOINTS.UPDATE_PROFILE, profileData, {
+    const response = await axiosInstance.post(ENDPOINTS.UPDATE_PROFILE, {
+      ...profileData,
+      _method: "PUT"
+    }, {
       headers: { "Content-Type": "multipart/form-data" }
     });
     return response.data;

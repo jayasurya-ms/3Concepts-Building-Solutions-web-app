@@ -6,7 +6,7 @@ const ENDPOINTS = {
   FETCH_DEVELOPER: "/fetch-developer",
   FETCH_NOTIFICATION: "/fetch-notification",
   FETCH_PROFILE: "/fetch-profile",
-  UPDATE_PROFILE: "/update-profile",
+  UPDATE_PROFILE: "/update-profile?_put",
   DELETE_PROFILE: "/delete-profile",
   CREATE_KMREADING: "/create-kmreading",
   FETCH_ACTIVE_SITES: "/fetch-active-sites",
