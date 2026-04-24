@@ -10,6 +10,7 @@ const ENDPOINTS = {
   DELETE_PROFILE: "/delete-profile",
   CREATE_KMREADING: "/create-kmreading",
   FETCH_ACTIVE_SITES: "/fetch-active-sites",
+  CREATE_SITE: "/create-site",
   CREATE_TRIP: "/create-trip",
   FETCH_TRIP_HISTORY: "/fetch-trip-history",
   FETCH_RECENT_TRIP: "/fetch-recent-trip",

@@ -12,6 +12,7 @@ const AppProvider = ({ children }) => {
   const [userUrls, setUserUrls] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isAddTripOpen, setIsAddTripOpen] = useState(false);
+  const [isAddSiteOpen, setIsAddSiteOpen] = useState(false);
   const navigate = useNavigate();
 
   // Initialize auth from cookies and localStorage
@@ -51,7 +52,10 @@ const AppProvider = ({ children }) => {
             setUser(resp.data);
             setUserUrls(resp.image_url || []);
             Cookies.set("user_data", JSON.stringify(resp.data), { expires: 7 });
-            localStorage.setItem("user_urls", JSON.stringify(resp.image_url || []));
+            localStorage.setItem(
+              "user_urls",
+              JSON.stringify(resp.image_url || []),
+            );
           }
         } catch (error) {
           console.error("Error fetching full profile on init:", error);
@@ -81,12 +85,12 @@ const AppProvider = ({ children }) => {
     const expires = 7;
     Cookies.set("token", userToken, { expires });
     Cookies.set("user_data", JSON.stringify(userData), { expires });
-    
+
     if (image_url && image_url.length > 0) {
       localStorage.setItem("user_urls", JSON.stringify(image_url));
       setUserUrls(image_url);
     }
-    
+
     setToken(userToken);
     setUser(userData);
 
@@ -117,12 +121,30 @@ const AppProvider = ({ children }) => {
   };
 
   return (
-    <ContextPanel.Provider value={{ statusCheck, user, token, userUrls, loading, login, logout, isAddTripOpen, setIsAddTripOpen }}>
-      {statusCheck === "ok" ? children : (
+    <ContextPanel.Provider
+      value={{
+        statusCheck,
+        user,
+        token,
+        userUrls,
+        loading,
+        login,
+        logout,
+        isAddTripOpen,
+        setIsAddTripOpen,
+        isAddSiteOpen,
+        setIsAddSiteOpen,
+      }}
+    >
+      {statusCheck === "ok" ? (
+        children
+      ) : (
         <div className="flex items-center justify-center h-screen bg-white">
           <div className="text-center space-y-4">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <h1 className="text-xl font-bold text-gray-800">System maintenance in progress...</h1>
+            <h1 className="text-xl font-bold text-gray-800">
+              System maintenance in progress...
+            </h1>
           </div>
         </div>
       )}
