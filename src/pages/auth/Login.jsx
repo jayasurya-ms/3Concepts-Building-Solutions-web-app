@@ -23,8 +23,7 @@ const Login = () => {
 
   const navigate = useNavigate();
   const { login } = useAuth();
- 
-  // Load remembered credentials on mount
+
   useEffect(() => {
     const savedMobile = localStorage.getItem("remembered_mobile");
     const savedPassword = localStorage.getItem("remembered_password");
@@ -47,7 +46,7 @@ const Login = () => {
         const token = data.data.token;
         const user = data.data.user;
         const imageUrls = data.image_url || [];
-        
+
         // Handle Remember Me
         if (rememberMe) {
           localStorage.setItem("remembered_mobile", mobile);
@@ -61,12 +60,15 @@ const Login = () => {
         toast.success("Welcome back! Login successful.");
         navigate("/");
       } else {
-        const errorMsg = data.msg || "Login failed. Please check your credentials.";
+        const errorMsg =
+          data.msg || "Login failed. Please check your credentials.";
         setError(errorMsg);
         toast.error(errorMsg);
       }
     } catch (err) {
-      const errorMsg = err.response?.data?.message || "Login failed. Please check your credentials.";
+      const errorMsg =
+        err.response?.data?.message ||
+        "Login failed. Please check your credentials.";
       setError(errorMsg);
       toast.error(errorMsg);
     } finally {
@@ -109,6 +111,7 @@ const Login = () => {
                     type="text"
                     required
                     placeholder="Enter Mobile Number"
+                    maxLength={10}
                     className="block w-full pl-12 py-2 bg-[#FFF7F7] border-transparent border-2 rounded-xl focus:bg-white focus:border-red-900 focus:ring-0 transition-all text-gray-900 font-medium"
                     value={mobile}
                     onChange={(e) => setMobile(e.target.value)}

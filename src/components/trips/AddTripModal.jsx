@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Loader2, X } from "lucide-react";
+import { Loader2, MapPlus, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-hot-toast";
 import apiService from "../../api/apiService";
+import { ContextPanel } from "../../lib/ContextPanel";
+import AddSiteModal from "../site/AddSiteModal";
 
 const AddTripModal = ({ isOpen, onClose }) => {
   const queryClient = useQueryClient();
+  const { isAddSiteOpen, setIsAddSiteOpen } = React.useContext(ContextPanel);
+
   const [formData, setFormData] = useState({
     trips_date: new Date().toISOString().split("T")[0],
     trips_time: new Date().toLocaleTimeString("en-GB", {
@@ -130,8 +134,16 @@ const AddTripModal = ({ isOpen, onClose }) => {
 
                 {/* From Site Row */}
                 <div className="space-y-2">
-                  <label className="text-xs font-black text-gray-700 uppercase tracking-widest ml-2">
-                    From Site
+                  <label className="text-xs font-black text-gray-700 uppercase tracking-widest ml-2 w-full flex justify-between">
+                    <span>From Site</span>
+                    <button
+                      type="button"
+                      onClick={() => setIsAddSiteOpen(true)}
+                      className="flex items-center space-x-1 px-4 py-1 rounded-xl text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                    >
+                      <MapPlus size={16} className="text-gray-400" />
+                      <span className="font-medium">Add Site</span>
+                    </button>
                   </label>
                   <div className="relative">
                     <select
@@ -147,11 +159,17 @@ const AddTripModal = ({ isOpen, onClose }) => {
                       }
                     >
                       <option value="">Select Origin...</option>
-                      {activeSites?.data?.map((site) => (
-                        <option key={site.id} value={site.id}>
-                          {site.site_name}
-                        </option>
-                      ))}
+                      {activeSites?.data
+                        ?.filter(
+                          (site) =>
+                            site.id.toString() !==
+                            formData.trips_to_id.toString(),
+                        )
+                        .map((site) => (
+                          <option key={site.id} value={site.id}>
+                            {site.site_name}
+                          </option>
+                        ))}
                     </select>
                     <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
                       <div className="border-l-2 border-b-2 border-current w-2 h-2 -rotate-45 mb-1"></div>
@@ -178,11 +196,17 @@ const AddTripModal = ({ isOpen, onClose }) => {
                       }
                     >
                       <option value="">Select Destination...</option>
-                      {activeSites?.data?.map((site) => (
-                        <option key={site.id} value={site.id}>
-                          {site.site_name}
-                        </option>
-                      ))}
+                      {activeSites?.data
+                        ?.filter(
+                          (site) =>
+                            site.id.toString() !==
+                            formData.trips_from_id.toString(),
+                        )
+                        .map((site) => (
+                          <option key={site.id} value={site.id}>
+                            {site.site_name}
+                          </option>
+                        ))}
                     </select>
                     <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
                       <div className="border-l-2 border-b-2 border-current w-2 h-2 -rotate-45 mb-1"></div>
@@ -215,6 +239,10 @@ const AddTripModal = ({ isOpen, onClose }) => {
           </motion.div>
         </>
       )}
+      <AddSiteModal
+        isOpen={isAddSiteOpen}
+        onClose={() => setIsAddSiteOpen(false)}
+      />
     </AnimatePresence>
   );
 };

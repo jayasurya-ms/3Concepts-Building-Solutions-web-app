@@ -87,8 +87,21 @@ const apiService = {
     const response = await axiosInstance.get(ENDPOINTS.FETCH_ACTIVE_SITES);
     return response.data;
   },
+  
+  // 12. POST create-site
+  createSite: async (siteName, siteAddress, siteUrl, placeId) => {
+    const response = await axiosInstance.post(ENDPOINTS.CREATE_SITE, {
+      site_name: siteName,
+      site_address: siteAddress,
+      site_url: siteUrl,
+      place_id: placeId,
+    }, {
+      headers: { "Content-Type": "multipart/form-data" }
+    });
+    return response.data;
+  },
 
-  // 12. POST create-trip
+  // 13. POST create-trip
   createTrip: async (tripsDate, tripsTime, tripsFromId, tripsToId) => {
     const response = await axiosInstance.post(ENDPOINTS.CREATE_TRIP, {
       trips_date: tripsDate,
